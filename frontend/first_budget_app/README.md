@@ -1,4 +1,4 @@
-# first_todo_app
+# first_budget_app
 
 A new Flutter project.
 
