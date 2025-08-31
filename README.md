@@ -15,4 +15,4 @@
 **🎯 목표**: Flutter + FastAPI 가계부 앱 기본 구조 구성
 - FastAPI 백엔드 구조 완성 (models, schemas, database)
 - CRUD API 엔드포인트 구현 (GET, POST, PUT, DELETE)
-- - Git 저장소 정리 및 GitHub 업로드
+- Git 저장소 정리 및 GitHub 업로드
