@@ -1,6 +1,6 @@
 # 가계부 앱 (Budget App)
-> Flutter + FastAPI를 이용한 개인 가계부 관리 앱
-> 제미나이 + Claude 를 통해서 배우면서 작업!!
+- Flutter + FastAPI를 이용한 개인 가계부 관리 앱
+- 제미나이 + Claude 를 통해서 배우면서 작업!!
 
 ## 📱 주요 기능
 - 지출 내역 관리
