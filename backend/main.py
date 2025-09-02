@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
+from typing import List, Optional
 
 import models
 import schemas
@@ -32,8 +33,12 @@ def read_root():
 
 
 @app.get("/transactions", response_model=List[schemas.Transaction])
-def read_transactions(db: Session = Depends(get_db)):
-    transactions = db.query(models.Transaction).all()
+def read_transactions(date: Optional[str] = None, db: Session = Depends(get_db)):
+    if date:
+        transactions = db.query(models.Transaction).filter(
+            models.Transaction.date == date).all()
+    else:
+        transactions = db.query(models.Transaction).all()
     return transactions
 
 

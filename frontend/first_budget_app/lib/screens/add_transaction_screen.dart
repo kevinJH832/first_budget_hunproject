@@ -5,7 +5,15 @@ import 'package:first_budget_app/services/api_service.dart';
 
 class AddTransactionScreen extends StatefulWidget {
   final DateTime? date;
-  const AddTransactionScreen({super.key, this.date});
+  final Map<String, dynamic>? transaction;
+  final bool isEdit;
+
+  const AddTransactionScreen({
+    super.key,
+    this.date,
+    this.transaction,
+    this.isEdit = false,
+  });
 
   @override
   State<AddTransactionScreen> createState() => _AddTransactionScreenState();
@@ -21,6 +29,29 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   void initState() {
     super.initState();
     _selectedDate = widget.date ?? DateTime.now();
+
+    if (widget.isEdit && widget.transaction != null) {
+      _loadExistingData();
+    }
+  }
+
+  void _loadExistingData() {
+    final transaction = widget.transaction!;
+
+    // 금액 (음수를 양수로 변환하여 표시)
+    final amount = (transaction['amount'] as num).abs();
+    _amountController.text = '${NumberFormat('#,###').format(amount)}원';
+
+    // 설명
+    _descriptionController.text = transaction['description'] ?? '';
+
+    // 카테고리
+    _selectedCategory = transaction['category'];
+
+    // 날짜
+    if (transaction['date'] != null) {
+      _selectedDate = DateTime.parse(transaction['date']);
+    }
   }
 
   final int _amount = 0; //초깃값
@@ -135,13 +166,13 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       "category": _selectedCategory!,
       "date": DateFormat('yyyy-MM-dd').format(_selectedDate), // yyyy-MM-dd 형식
     };
-
     // TODO: 백엔드 모델에 payment_method 필드를 추가하고 전송해야 합니다. 지금은 일단 제외.
     try {
-      // 4. API 서비스를 통해 백엔드에 데이터 전송
-      await createTransaction(transactionData);
-
-      // 5. 성공적으로 저장되면 현재 화면(시트) 닫기
+      if (widget.isEdit && widget.transaction != null) {
+        await updateTransaction(widget.transaction!['id'], transactionData);
+      } else {
+        await createTransaction(transactionData);
+      }
       if (mounted) {
         Navigator.pop(context, true);
       }
