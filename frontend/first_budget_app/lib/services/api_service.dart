@@ -96,3 +96,24 @@ Future<Map<String, dynamic>> updateTransaction(
     throw Exception('서버에 수정 요청을 보낼 수 없습니다: $e');
   }
 }
+
+Future<List<Map<String, dynamic>>> fetchMonthlyTransactions(
+  int year,
+  int month,
+) async {
+  final url =
+      'http://127.0.0.1:8000/transactions/monthly?year=$year&month=$month';
+
+  try {
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+      return jsonResponse.cast<Map<String, dynamic>>();
+    } else {
+      throw Exception('월별 데이터를 가져오는데 실패했습니다. 상태 코드: ${response.statusCode}');
+    }
+  } catch (e) {
+    throw Exception('서버에 연결할 수 없습니다: $e');
+  }
+}

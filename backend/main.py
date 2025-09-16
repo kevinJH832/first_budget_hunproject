@@ -1,6 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
-from typing import List
 from typing import List, Optional
 
 import models
@@ -29,9 +28,8 @@ def get_db():
 def read_root():
     return {"Hello": "Budget App"}
 
-# 임시테스트
 
-
+# 일별조회
 @app.get("/transactions", response_model=List[schemas.Transaction])
 def read_transactions(date: Optional[str] = None, db: Session = Depends(get_db)):
     if date:
@@ -39,6 +37,26 @@ def read_transactions(date: Optional[str] = None, db: Session = Depends(get_db))
             models.Transaction.date == date).all()
     else:
         transactions = db.query(models.Transaction).all()
+    return transactions
+
+
+# 월별조회
+@app.get("/transactions/monthly", response_model=List[schemas.Transaction])
+def read_monthly_transactions(year: int, month: int, db: Session = Depends(get_db)):
+    month_str = f"{month:02d}"  # 1월이면 01 로 대치
+    start_date = f"{year}-{month_str}-01"
+
+    # 12월은 내년 1월인거인지
+    if month == 12:
+        end_date = f"{year + 1}-01-01"
+    else:
+        end_date = f"{year}-{month + 1:02d}-01"
+
+    transactions = db.query(models.Transaction).filter(
+        models.Transaction.date >= start_date,
+        models.Transaction.date < end_date
+    ).all()
+
     return transactions
 
 
@@ -73,8 +91,8 @@ def delete_transaction(transaction_id: int, db: Session = Depends(get_db)):
 
     return {"message": "Transaction deleted successfully"}
 
-# 수정함수
 
+# 수정함수
 
 @app.put("/transactions/{transaction_id}", response_model=schemas.Transaction)
 def update_transaction(transaction_id: int, transaction_data: schemas.TransactionCreate, db: Session = Depends(get_db)):
