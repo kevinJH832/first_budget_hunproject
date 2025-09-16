@@ -4,9 +4,11 @@ import 'package:intl/intl.dart';
 
 // API 관련 로직만을 전문적으로 담당하는 파일
 
+const String baseUrl = 'https://first-budget-hunproject.onrender.com';
+
 // GET: 거래 내역 조회
 Future<List<Map<String, dynamic>>> fetchTransactions({DateTime? date}) async {
-  var url = 'http://127.0.0.1:8000/transactions';
+  var url = '$baseUrl/transactions';
 
   if (date != null) {
     String formattedDate = DateFormat('yyyy-MM-dd').format(date);
@@ -33,7 +35,7 @@ Future<List<Map<String, dynamic>>> fetchTransactions({DateTime? date}) async {
 Future<Map<String, dynamic>> createTransaction(
   Map<String, dynamic> transactionData,
 ) async {
-  final url = 'http://127.0.0.1:8000/transactions';
+  final url = '$baseUrl/transactions';
 
   try {
     final response = await http.post(
@@ -57,7 +59,7 @@ Future<Map<String, dynamic>> createTransaction(
 
 // DELETE: 특정 ID의 거래 내역 삭제
 Future<void> deleteTransaction(int id) async {
-  final url = 'http://127.0.0.1:8000/transactions/$id';
+  final url = '$baseUrl/transactions/$id';
 
   try {
     final response = await http.delete(Uri.parse(url));
@@ -75,8 +77,7 @@ Future<Map<String, dynamic>> updateTransaction(
   int id,
   Map<String, dynamic> transactionData,
 ) async {
-  final url = 'http://127.0.0.1:8000/transactions/$id';
-
+  final url = '$baseUrl/transactions/$id';
   try {
     final response = await http.put(
       Uri.parse(url),
@@ -101,8 +102,7 @@ Future<List<Map<String, dynamic>>> fetchMonthlyTransactions(
   int year,
   int month,
 ) async {
-  final url =
-      'http://127.0.0.1:8000/transactions/monthly?year=$year&month=$month';
+  final url = '$baseUrl/transactions/monthly?year=$year&month=$month';
 
   try {
     final response = await http.get(Uri.parse(url));

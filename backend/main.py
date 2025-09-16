@@ -2,6 +2,7 @@ from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
+from fastapi.middleware.cors import CORSMiddleware  # 웹앱
 import models
 import schemas
 from database import SessionLocal, engine
@@ -14,6 +15,18 @@ app = FastAPI()
 # 데이터베이스 세션 얻는 함수
 # API가 호출될 때마다 이 함수가 실행되어 세션 오픈
 # API 처리가 끝나면 세션을 닫음
+
+origins = [
+    "https://monumental-souffle-177145.netlify.app",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],  # 모든 메소드 허용
+    allow_headers=["*"],  # 모든 헤더 허용
+)
 
 
 def get_db():
